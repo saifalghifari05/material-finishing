@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Material Finishing</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f5f5f5;
+      color: #1a1a1a;
+      font-size: 15px;
+    }
+
+    header {
+      background: #fff;
+      border-bottom: 1px solid #e5e5e5;
+      padding: 14px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    header h1 { font-size: 17px; font-weight: 600; }
+    header p { font-size: 12px; color: #888; margin-top: 2px; }
+
+    .tabs {
+      display: flex;
+      background: #fff;
+      border-bottom: 1px solid #e5e5e5;
+      position: sticky;
+      top: 57px;
+      z-index: 9;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 12px 0;
+      text-align: center;
+      font-size: 13px;
+      color: #888;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      background: none;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+    }
+
+    .tab.active {
+      color: #1a1a1a;
+      border-bottom-color: #1a1a1a;
+      font-weight: 500;
+    }
+
+    .page { display: none; padding: 16px; max-width: 600px; margin: 0 auto; }
+    .page.active { display: block; }
+
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 12px;
+      border: 1px solid #e8e8e8;
+    }
+
+    .card-title { font-size: 14px; font-weight: 500; margin-bottom: 12px; color: #555; }
+
+    .tipe-toggle {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .tipe-btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+      background: #f5f5f5;
+      color: #888;
+      font-size: 14px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .tipe-btn.masuk.active { background: #e8f5e9; border-color: #4caf50; color: #2e7d32; }
+    .tipe-btn.keluar.active { background: #fff3e0; border-color: #ff9800; color: #e65100; }
+
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; font-size: 12px; color: #888; margin-bottom: 5px; }
+
+    input, select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+      background: #fafafa;
+      color: #1a1a1a;
+      -webkit-appearance: none;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: #1a1a1a;
+      background: #fff;
+    }
+
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    .btn-submit {
+      width: 100%;
+      padding: 12px;
+      background: #1a1a1a;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 4px;
+    }
+
+    .btn-submit:active { opacity: 0.8; }
+    .btn-submit:disabled { background: #ccc; cursor: not-allowed; }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .metric {
+      background: #fff;
+      border-radius: 10px;
+      padding: 14px;
+      border: 1px solid #e8e8e8;
+    }
+
+    .metric-label { font-size: 12px; color: #888; margin-bottom: 4px; }
+    .metric-value { font-size: 24px; font-weight: 600; }
+    .metric-value.green { color: #2e7d32; }
+    .metric-value.orange { color: #e65100; }
+
+    .search-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .search-bar input { flex: 1; }
+
+    .search-bar select { width: 110px; }
+
+    .list-item {
+      padding: 12px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .list-item:last-child { border-bottom: none; }
+
+    .list-item-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 4px;
+    }
+
+    .item-nama { font-size: 14px; font-weight: 500; }
+    .item-jumlah { font-size: 14px; font-weight: 600; }
+    .item-jumlah.masuk { color: #2e7d32; }
+    .item-jumlah.keluar { color: #e65100; }
+
+    .item-detail { font-size: 12px; color: #999; display: flex; justify-content: space-between; }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .badge.masuk { background: #e8f5e9; color: #2e7d32; }
+    .badge.keluar { background: #fff3e0; color: #e65100; }
+
+    .btn-hapus {
+      background: none;
+      border: none;
+      color: #ccc;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 0 4px;
+      line-height: 1;
+    }
+
+    .btn-hapus:active { color: #e53935; }
+
+    .stock-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 11px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .stock-item:last-child { border-bottom: none; }
+    .stock-nama { font-size: 14px; font-weight: 500; }
+    .stock-kode { font-size: 12px; color: #999; margin-top: 2px; }
+    .stock-jumlah { font-size: 15px; font-weight: 600; }
+    .stock-jumlah.aman { color: #2e7d32; }
+    .stock-jumlah.tipis { color: #f57c00; }
+    .stock-jumlah.habis { color: #c62828; }
+
+    .empty {
+      text-align: center;
+      color: #bbb;
+      font-size: 14px;
+      padding: 32px 0;
+    }
+
+    .loading {
+      text-align: center;
+      color: #bbb;
+      font-size: 13px;
+      padding: 20px 0;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1a1a1a;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-size: 13px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 100;
+    }
+
+    .toast.show { opacity: 1; }
+
+    .export-btn {
+      width: 100%;
+      padding: 10px;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #555;
+      cursor: pointer;
+      margin-bottom: 12px;
+    }
+
+    .filter-period {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .period-btn {
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid #ddd;
+      background: #fff;
+      font-size: 13px;
+      color: #888;
+      cursor: pointer;
+    }
+
+    .period-btn.active {
+      background: #1a1a1a;
+      color: #fff;
+      border-color: #1a1a1a;
+    }
+
+    .setup-notice {
+      background: #fff8e1;
+      border: 1px solid #ffe082;
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 12px;
+      font-size: 13px;
+      color: #6d4c00;
+      line-height: 1.6;
+    }
+
+    .setup-notice strong { display: block; margin-bottom: 4px; font-size: 14px; }
+  </style>
+</head>
+<body>
+
+<!-- https://script.google.com/macros/s/AKfycbyeASX_xzXruX1roJxJMkQw2kPqe4-pJEjWj3HWqjzqiqjD1D4mp5Xe4ZucfwJ92qs/exec -->
+<script>
+  const API_URL = "GANTI_DENGAN_URL_APPS_SCRIPT_ANDA";
+</script>
+
+<header>
+  <h1>Material Finishing</h1>
+  <p id="status-text">Menghubungkan ke database...</p>
+</header>
+
+<div class="tabs">
+  <button class="tab active" onclick="showPage('catat')">Catat</button>
+  <button class="tab" onclick="showPage('stok')">Stok</button>
+  <button class="tab" onclick="showPage('riwayat')">Riwayat</button>
+  <button class="tab" onclick="showPage('laporan')">Laporan</button>
+</div>
+
+<!-- HALAMAN CATAT -->
+<div class="page active" id="page-catat">
+  <div id="setup-warning" class="setup-notice" style="display:none;">
+    <strong>⚠ API belum dikonfigurasi</strong>
+    Buka file <code>index.html</code>, lalu ganti nilai <code>API_URL</code> dengan URL Google Apps Script Anda.
+  </div>
+
+  <div class="metrics">
+    <div class="metric">
+      <div class="metric-label">Masuk hari ini</div>
+      <div class="metric-value green" id="m-masuk">—</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Keluar hari ini</div>
+      <div class="metric-value orange" id="m-keluar">—</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="tipe-toggle">
+      <button class="tipe-btn masuk active" id="btn-masuk" onclick="setTipe('masuk')">+ Masuk</button>
+      <button class="tipe-btn keluar" id="btn-keluar" onclick="setTipe('keluar')">− Keluar</button>
+    </div>
+
+    <div class="row2">
+      <div class="form-group">
+        <label>Kode Material</label>
+        <input id="f-kode" placeholder="cth: MAT-001" />
+      </div>
+      <div class="form-group">
+        <label>Nama Material</label>
+        <input id="f-nama" placeholder="cth: Kain Katun" />
+      </div>
+    </div>
+
+    <div class="row2">
+      <div class="form-group">
+        <label>Jumlah</label>
+        <input id="f-jumlah" type="number" min="0" step="any" placeholder="0" />
+      </div>
+      <div class="form-group">
+        <label>Satuan</label>
+        <select id="f-satuan">
+          <option>pcs</option>
+          <option>meter</option>
+          <option>kg</option>
+          <option>lusin</option>
+          <option>roll</option>
+          <option>lembar</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Operator / PIC</label>
+      <input id="f-pic" placeholder="Nama operator" />
+    </div>
+
+    <button class="btn-submit" id="btn-simpan" onclick="simpan()">Simpan</button>
+  </div>
+</div>
+
+<!-- HALAMAN STOK -->
+<div class="page" id="page-stok">
+  <div class="card">
+    <div class="card-title">Stok saat ini</div>
+    <div id="stok-list"><div class="loading">Memuat...</div></div>
+  </div>
+</div>
+
+<!-- HALAMAN RIWAYAT -->
+<div class="page" id="page-riwayat">
+  <div class="search-bar">
+    <input id="search" placeholder="Cari nama / kode / PIC..." oninput="renderRiwayat()" />
+    <select id="filter-tipe" onchange="renderRiwayat()">
+      <option value="">Semua</option>
+      <option value="masuk">Masuk</option>
+      <option value="keluar">Keluar</option>
+    </select>
+  </div>
+  <button class="export-btn" onclick="exportCSV()">Export CSV</button>
+  <div class="card">
+    <div id="riwayat-list"><div class="loading">Memuat...</div></div>
+  </div>
+</div>
+
+<!-- HALAMAN LAPORAN -->
+<div class="page" id="page-laporan">
+  <div class="filter-period">
+    <button class="period-btn active" onclick="setPeriod('hari')" id="p-hari">Hari ini</button>
+    <button class="period-btn" onclick="setPeriod('minggu')" id="p-minggu">Minggu ini</button>
+    <button class="period-btn" onclick="setPeriod('bulan')" id="p-bulan">Bulan ini</button>
+  </div>
+  <div class="metrics">
+    <div class="metric">
+      <div class="metric-label">Total masuk</div>
+      <div class="metric-value green" id="l-masuk">—</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Total keluar</div>
+      <div class="metric-value orange" id="l-keluar">—</div>
+    </div>
+  </div>
+  <div class="card">
+    <div id="laporan-list"><div class="loading">Memuat...</div></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let allData = [];
+let currentTipe = 'masuk';
+let currentPeriod = 'hari';
+
+// ===== INIT =====
+window.onload = async () => {
+  if (API_URL.includes("GANTI")) {
+    document.getElementById('setup-warning').style.display = '';
+    document.getElementById('status-text').textContent = 'API belum dikonfigurasi';
+    return;
+  }
+  await loadData();
+};
+
+async function loadData() {
+  document.getElementById('status-text').textContent = 'Menyinkronkan...';
+  try {
+    const res = await fetch(`${API_URL}?action=getAll`);
+    const json = await res.json();
+    allData = json.data || [];
+    document.getElementById('status-text').textContent = `${allData.length} data tersimpan`;
+    renderAll();
+  } catch (e) {
+    document.getElementById('status-text').textContent = 'Gagal terhubung';
+    toast('Gagal terhubung ke database');
+  }
+}
+
+// ===== FORM =====
+function setTipe(t) {
+  currentTipe = t;
+  document.getElementById('btn-masuk').classList.toggle('active', t === 'masuk');
+  document.getElementById('btn-keluar').classList.toggle('active', t === 'keluar');
+}
+
+
+async function simpan() {
+  const kode = document.getElementById('f-kode').value.trim();
+  const nama = document.getElementById('f-nama').value.trim();
+  const jumlah = parseFloat(document.getElementById('f-jumlah').value);
+  const satuan = document.getElementById('f-satuan').value;
+  const now = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  const tanggal = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
+  const pic = document.getElementById('f-pic').value.trim();
+
+  if (!kode || !nama || !jumlah || !pic) {
+    toast('Lengkapi semua field!'); return;
+  }
+
+  const btn = document.getElementById('btn-simpan');
+  btn.disabled = true;
+  btn.textContent = 'Menyimpan...';
+
+  try {
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'tambah', data: { tipe: currentTipe, kode, nama, jumlah, satuan, tanggal, pic } })
+    });
+    const json = await res.json();
+    if (json.success) {
+      allData.push({ id: json.id, tipe: currentTipe, kode, nama, jumlah, satuan, tanggal, pic });
+      document.getElementById('f-jumlah').value = '';
+      renderAll();
+      toast('Data berhasil disimpan!');
+      document.getElementById('status-text').textContent = `${allData.length} data tersimpan`;
+    }
+  } catch (e) {
+    toast('Gagal menyimpan. Cek koneksi.');
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Simpan';
+}
+
+// ===== HAPUS =====
+async function hapus(id) {
+  if (!confirm('Hapus data ini?')) return;
+  try {
+    await fetch(API_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'hapus', id })
+    });
+    allData = allData.filter(d => d.id.toString() !== id.toString());
+    renderAll();
+    toast('Data dihapus');
+  } catch (e) {
+    toast('Gagal menghapus');
+  }
+}
+
+// ===== RENDER =====
+function renderAll() {
+  renderMetrics();
+  renderStok();
+  renderRiwayat();
+  renderLaporan();
+}
+
+function renderMetrics() {
+  const today = new Date().toDateString();
+  const todayData = allData.filter(d => new Date(d.tanggal).toDateString() === today);
+  const masuk = todayData.filter(d => d.tipe === 'masuk').length;
+  const keluar = todayData.filter(d => d.tipe === 'keluar').length;
+  document.getElementById('m-masuk').textContent = masuk;
+  document.getElementById('m-keluar').textContent = keluar;
+}
+
+function renderStok() {
+  const stock = {};
+  allData.forEach(d => {
+    if (!stock[d.kode]) stock[d.kode] = { kode: d.kode, nama: d.nama, satuan: d.satuan, total: 0 };
+    stock[d.kode].total += d.tipe === 'masuk' ? +d.jumlah : -d.jumlah;
+  });
+
+  const items = Object.values(stock);
+  const el = document.getElementById('stok-list');
+
+  if (!items.length) { el.innerHTML = '<div class="empty">Belum ada data stok</div>'; return; }
+
+  el.innerHTML = items.map(s => {
+    const cls = s.total <= 0 ? 'habis' : s.total < 10 ? 'tipis' : 'aman';
+    return `<div class="stock-item">
+      <div>
+        <div class="stock-nama">${s.nama}</div>
+        <div class="stock-kode">${s.kode}</div>
+      </div>
+      <div class="stock-jumlah ${cls}">${s.total} ${s.satuan}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderRiwayat() {
+  const q = (document.getElementById('search').value || '').toLowerCase();
+  const ft = document.getElementById('filter-tipe').value;
+
+  const filtered = allData
+    .filter(d => {
+      const match = !q || d.nama.toLowerCase().includes(q) || d.kode.toLowerCase().includes(q) || d.pic.toLowerCase().includes(q);
+      return match && (!ft || d.tipe === ft);
+    })
+    .sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
+
+  const el = document.getElementById('riwayat-list');
+  if (!filtered.length) { el.innerHTML = '<div class="empty">Tidak ada data</div>'; return; }
+
+  el.innerHTML = filtered.map(d => {
+    const dt = new Date(d.tanggal);
+    const tgl = dt.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+    const jam = dt.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+    const sign = d.tipe === 'masuk' ? '+' : '−';
+    return `<div class="list-item">
+      <div class="list-item-top">
+        <div>
+          <div class="item-nama">${d.nama} <span class="badge ${d.tipe}">${d.tipe}</span></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="item-jumlah ${d.tipe}">${sign}${d.jumlah} ${d.satuan}</div>
+          <button class="btn-hapus" onclick="hapus('${d.id}')">×</button>
+        </div>
+      </div>
+      <div class="item-detail">
+        <span>${d.kode} · ${d.pic}</span>
+        <span>${tgl}, ${jam}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderLaporan() {
+  const now = new Date();
+  const filtered = allData.filter(d => {
+    const dt = new Date(d.tanggal);
+    if (currentPeriod === 'hari') return dt.toDateString() === now.toDateString();
+    if (currentPeriod === 'minggu') {
+      const start = new Date(now);
+      start.setDate(now.getDate() - now.getDay());
+      start.setHours(0, 0, 0, 0);
+      return dt >= start;
+    }
+    return dt.getMonth() === now.getMonth() && dt.getFullYear() === now.getFullYear();
+  });
+
+  const masukTotal = filtered.filter(d => d.tipe === 'masuk').length;
+  const keluarTotal = filtered.filter(d => d.tipe === 'keluar').length;
+  document.getElementById('l-masuk').textContent = masukTotal + ' transaksi';
+  document.getElementById('l-keluar').textContent = keluarTotal + ' transaksi';
+
+  const grouped = {};
+  filtered.forEach(d => {
+    if (!grouped[d.nama]) grouped[d.nama] = { masuk: 0, keluar: 0, satuan: d.satuan };
+    if (d.tipe === 'masuk') grouped[d.nama].masuk += +d.jumlah;
+    else grouped[d.nama].keluar += +d.jumlah;
+  });
+
+  const el = document.getElementById('laporan-list');
+  if (!Object.keys(grouped).length) { el.innerHTML = '<div class="empty">Tidak ada transaksi</div>'; return; }
+
+  el.innerHTML = Object.entries(grouped).map(([nama, v]) =>
+    `<div class="list-item">
+      <div style="font-weight:500;margin-bottom:4px;">${nama}</div>
+      <div style="font-size:13px;display:flex;gap:16px;">
+        <span style="color:#2e7d32;">Masuk: ${v.masuk} ${v.satuan}</span>
+        <span style="color:#e65100;">Keluar: ${v.keluar} ${v.satuan}</span>
+      </div>
+    </div>`
+  ).join('');
+}
+
+function setPeriod(p) {
+  currentPeriod = p;
+  ['hari','minggu','bulan'].forEach(id => document.getElementById('p-'+id).classList.toggle('active', id === p));
+  renderLaporan();
+}
+
+function showPage(p) {
+  document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('page-' + p).classList.add('active');
+  event.target.classList.add('active');
+  if (p === 'riwayat' || p === 'stok' || p === 'laporan') loadData();
+}
+
+function exportCSV() {
+  if (!allData.length) { toast('Tidak ada data'); return; }
+  const header = ['Tanggal','Tipe','Kode','Nama','Jumlah','Satuan','PIC'];
+  const rows = allData
+    .sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal))
+    .map(d => [d.tanggal, d.tipe, d.kode, d.nama, d.jumlah, d.satuan, d.pic]);
+  const csv = [header, ...rows].map(r => r.map(c => `"${c}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'material_finishing.csv';
+  a.click();
+  toast('CSV berhasil diunduh!');
+}
+
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2500);
+}
+</script>
+</body>
+</html>
